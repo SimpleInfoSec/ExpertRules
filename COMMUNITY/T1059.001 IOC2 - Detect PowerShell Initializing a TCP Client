@@ -1,0 +1,36 @@
+## T1059.001 IOC2 - Detect PowerShell Initializing a TCP Client
+
+## Author
+https://github.com/SimpleInfoSec
+
+## Description
+This rule detects the use of PowerShell to create a TCP client using the System.Net.Sockets namespace and the TCPClient class. 
+This may indicate the creation of a reverse shell using PowerShell. 
+
+## Rule TCL
+```tcl
+Rule {
+    Process {
+        Include OBJECT_NAME { -v "*PowerShell*" }
+        Include OBJECT_NAME { -v "*PWSH*" }
+    }
+    Target {
+        Match PROCESS { 
+            Include PROCESS_CMD_LINE { -v "*Net.Sockets.TCPClient*"}
+        }
+    }
+}
+```
+
+## Trigger
+You can trigger this rule by opening CMD and using PowerShell or PWSH to create a TCP Client. Make sure you use a test system and understand the command before executing it. 
+Some examples of creating a reverse shell using PowerShell can be found here: 
+https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md#powershell
+
+## Tested Platforms
+Windows 10, ENS 10.7.x, PowerShell 5.1.17763.1490 & PWSH 7.2.0-preview.3
+
+## Notes
+There may be legitimate use cases for PowerShell creating TCP clients in your environment. I highly advise you to test this rule to determine it's practicality in your environment. 
+PowerShell Reverse Shells are used by a variety of APT's. I recommend checking out T1059.001 in the MITRE ATT&CK matrix as well as reviewing other publicly released IOC's to view
+code samples of PowerShell reverse shells. 
